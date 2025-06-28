@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import Layout from './components/Layout';
+import Sidebar from './components/Sidebar';
+import MainPanel from './components/MainPanel';
+import SettingsPanel from './components/SettingsPanel';
 
 const API_BASE_URL = 'http://localhost:5000'; // Changed to local backend server
 
@@ -289,257 +293,163 @@ function App() {
     : 'bg-blue-600 hover:bg-blue-700 text-white';
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${themeClasses}`}>
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-4xl font-bold text-green-400 mb-2">AI Debate Platform</h1>
-            <p className={`text-lg ${isDarkTheme ? 'text-gray-300' : 'text-gray-600'}`}>
-              Collaborative AI Problem Solving
-            </p>
-          </div>
-          <button
-            onClick={() => setIsDarkTheme(!isDarkTheme)}
-            className={`p-3 rounded-lg border transition-colors ${cardClasses}`}
-          >
-            {isDarkTheme ? '☀️' : '🌙'}
-          </button>
-        </div>
-
-        {/* Question Input */}
-        <div className={`rounded-lg border p-6 mb-6 ${cardClasses}`}>
-          <label className={`block text-lg font-medium mb-3 ${isDarkTheme ? 'text-blue-300' : 'text-blue-700'}`}>
-            Ask your question:
-          </label>
-          <textarea
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            placeholder="Ask anything - technical questions, philosophy, creative writing, business strategy, or any topic you'd like multiple AI perspectives on..."
-            className={`w-full h-32 p-4 rounded-lg border resize-none transition-colors ${inputClasses}`}
-          />
-        </div>
-
-        {/* Optimized Question Display */}
-        {optimizedQuestion && (
-          <div className={`rounded-lg border p-4 mb-6 ${cardClasses}`}>
-            <h3 className={`font-medium mb-2 ${isDarkTheme ? 'text-purple-300' : 'text-purple-700'}`}>
-              Optimized Question:
-            </h3>
-            <p className={`${isDarkTheme ? 'text-gray-300' : 'text-gray-700'}`}>
-              {optimizedQuestion}
-            </p>
-          </div>
-        )}
-
-        {/* Model Selection */}
-        <div className={`rounded-lg border p-6 mb-6 ${cardClasses}`}>
-          <h3 className={`text-lg font-medium mb-4 ${isDarkTheme ? 'text-purple-300' : 'text-purple-700'}`}>
-            Select AI Models:
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {Object.entries(MODEL_CONFIG).map(([provider, config]) => (
-              <div key={provider} className={`border rounded-lg p-4 ${cardClasses}`}>
-                <div className="flex items-center mb-3">
-                  <input
-                    type="checkbox"
-                    checked={enabledProviders[provider]}
-                    onChange={(e) => setEnabledProviders(prev => ({
-                      ...prev,
-                      [provider]: e.target.checked
-                    }))}
-                    className="mr-3"
-                  />
-                  <span className="text-2xl mr-2">{config.icon}</span>
-                  <span className="font-medium">{config.name}</span>
-                </div>
-                <select
-                  value={selectedModels[provider]}
-                  onChange={(e) => setSelectedModels(prev => ({
-                    ...prev,
-                    [provider]: e.target.value
-                  }))}
-                  disabled={!enabledProviders[provider]}
-                  className={`w-full p-2 rounded border transition-colors ${inputClasses} ${
-                    !enabledProviders[provider] ? 'opacity-50' : ''
-                  }`}
-                >
-                  {config.models.map(model => (
-                    <option key={model} value={model}>{model}</option>
-                  ))}
-                </select>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Settings */}
-        <div className={`rounded-lg border p-6 mb-6 ${cardClasses}`}>
-          <div className="flex items-center gap-4">
-            <label className={`font-medium ${isDarkTheme ? 'text-blue-300' : 'text-blue-700'}`}>
-              Max Rounds:
-            </label>
-            <select
-              value={maxRounds}
-              onChange={(e) => setMaxRounds(parseInt(e.target.value))}
-              className={`p-2 rounded border transition-colors ${inputClasses}`}
-            >
-              <option value={1}>1</option>
-              <option value={2}>2</option>
-              <option value={3}>3</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Start Button */}
-        <button
-          onClick={startDebate}
-          disabled={isDebating || !question.trim()}
-          className={`w-full py-4 px-6 rounded-lg font-medium text-lg transition-colors ${buttonClasses} ${
-            isDebating || !question.trim() ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
-        >
-          {isDebating ? 'Debating...' : 'Start Debate'}
-        </button>
-
-        {/* Debug Info */}
-        {debugInfo.length > 0 && (
-          <div className={`rounded-lg border p-4 mt-6 ${cardClasses}`}>
-            <h3 className={`font-medium mb-3 ${isDarkTheme ? 'text-green-300' : 'text-green-700'}`}>
-              Debug Info:
-            </h3>
-            <div className={`space-y-1 text-sm font-mono ${isDarkTheme ? 'text-gray-300' : 'text-gray-700'}`}>
-              {debugInfo.map((info, index) => (
-                <div key={index}>{info}</div>
-              ))}
+    <Layout>
+      <Sidebar>
+        <SettingsPanel
+          isDarkTheme={isDarkTheme}
+          setIsDarkTheme={setIsDarkTheme}
+          cardClasses={cardClasses}
+          inputClasses={inputClasses}
+          MODEL_CONFIG={MODEL_CONFIG}
+          selectedModels={selectedModels}
+          setSelectedModels={setSelectedModels}
+          enabledProviders={enabledProviders}
+          setEnabledProviders={setEnabledProviders}
+          maxRounds={maxRounds}
+          setMaxRounds={setMaxRounds}
+        />
+      </Sidebar>
+      <MainPanel>
+        <div className="container mx-auto px-4 py-8 max-w-6xl">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-4xl font-bold text-green-400 mb-2">AI Debate Platform</h1>
+              <p className={`text-lg ${isDarkTheme ? 'text-gray-300' : 'text-gray-600'}`}>
+                Collaborative AI Problem Solving
+              </p>
             </div>
           </div>
-        )}
 
-        {/* Messages */}
-        {messages.length > 0 && (
-          <div className="mt-6 space-y-4">
-            {messages.map((message, index) => (
-              <div key={index} className={`rounded-lg border p-6 ${cardClasses}`}>
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">{MODEL_CONFIG[message.provider].icon}</span>
-                    <div>
-                      <h4 className="font-medium text-lg">{message.model}</h4>
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className={`px-2 py-1 rounded ${
-                          message.real_api 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-yellow-100 text-yellow-800'
-                        }`}>
-                          {message.real_api ? 'Real API' : 'Demo'}
-                        </span>
-                        <span className={`${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>
-                          Round {message.round} • {message.confidence}% confidence
-                        </span>
-                        {message.tokens_used > 0 && (
-                          <span className={`${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>
-                            • {message.tokens_used} tokens
+          {/* Question Input */}
+          <div className={`rounded-lg border p-6 mb-6 ${cardClasses}`}>
+            <label className={`block text-lg font-medium mb-3 ${isDarkTheme ? 'text-blue-300' : 'text-blue-700'}`}>
+              Ask your question:
+            </label>
+            <textarea
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder="Ask anything - technical questions, philosophy, creative writing, business strategy, or any topic you'd like multiple AI perspectives on..."
+              className={`w-full h-32 p-4 rounded-lg border resize-none transition-colors ${inputClasses}`}
+            />
+          </div>
+
+          {/* Optimized Question Display */}
+          {optimizedQuestion && (
+            <div className={`rounded-lg border p-4 mb-6 ${cardClasses}`}>
+              <h3 className={`font-medium mb-2 ${isDarkTheme ? 'text-purple-300' : 'text-purple-700'}`}>
+                Optimized Question:
+              </h3>
+              <p className={`${isDarkTheme ? 'text-gray-300' : 'text-gray-700'}`}>
+                {optimizedQuestion}
+              </p>
+            </div>
+          )}
+
+          {/* Start Button */}
+          <button
+            onClick={startDebate}
+            disabled={isDebating || !question.trim()}
+            className={`w-full py-4 px-6 rounded-lg font-medium text-lg transition-colors ${buttonClasses} ${
+              isDebating || !question.trim() ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            {isDebating ? 'Debating...' : 'Start Debate'}
+          </button>
+
+          {/* Debug Info */}
+          {debugInfo.length > 0 && (
+            <div className={`rounded-lg border p-4 mt-6 ${cardClasses}`}>
+              <h3 className={`font-medium mb-2 ${isDarkTheme ? 'text-yellow-300' : 'text-yellow-700'}`}>
+                Debug Info:
+              </h3>
+              <pre className="text-xs whitespace-pre-wrap max-h-48 overflow-y-auto">
+                {debugInfo.join('\n')}
+              </pre>
+            </div>
+          )}
+
+          {/* Debate Messages */}
+          {messages.length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-3xl font-bold mb-4 text-center">Debate in Progress...</h2>
+              {Array.from({ length: maxRounds }, (_, i) => i + 1).map(roundNum => (
+                <div key={roundNum} className="mb-8">
+                  <h3 className={`text-2xl font-semibold mb-4 text-center ${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>
+                    Round {roundNum}
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {messages.filter(m => m.round === roundNum).map((msg, index) => (
+                      <div key={index} className={`rounded-lg border p-4 ${cardClasses}`}>
+                        <div className="flex justify-between items-center mb-2">
+                          <div className="flex items-center">
+                            <span className="text-2xl mr-2">{MODEL_CONFIG[msg.provider].icon}</span>
+                            <span className="font-medium">{msg.model}</span>
+                          </div>
+                          <span className={`text-sm font-semibold ${msg.real_api ? 'text-green-400' : 'text-yellow-400'}`}>
+                            {msg.real_api ? 'API' : 'Fallback'}
                           </span>
+                        </div>
+                        <p className="text-sm mb-2">{msg.text}</p>
+                        {msg.reasoning && (
+                          <details className="text-xs mt-2">
+                            <summary className="cursor-pointer">Show Reasoning</summary>
+                            <p className="mt-1 p-2 bg-gray-700 rounded">{msg.reasoning}</p>
+                          </details>
                         )}
                       </div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => copyToClipboard(message.text)}
-                    className={`px-3 py-1 rounded text-sm transition-colors ${buttonClasses}`}
-                  >
-                    Copy
-                  </button>
-                </div>
-
-                {/* Chain of Thought */}
-                {message.reasoning && (
-                  <div className={`mb-4 p-3 rounded border-l-4 border-blue-500 ${
-                    isDarkTheme ? 'bg-gray-700' : 'bg-blue-50'
-                  }`}>
-                    <h5 className={`font-medium mb-2 ${isDarkTheme ? 'text-blue-300' : 'text-blue-700'}`}>
-                      🧠 Chain of Thought:
-                    </h5>
-                    <p className={`text-sm ${isDarkTheme ? 'text-gray-300' : 'text-gray-700'}`}>
-                      {message.reasoning}
-                    </p>
-                  </div>
-                )}
-
-                <div className={`whitespace-pre-wrap ${isDarkTheme ? 'text-gray-100' : 'text-gray-900'}`}>
-                  {message.text}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Final Synthesis */}
-        {finalSynthesis && (
-          <div className={`rounded-lg border p-6 mt-6 ${cardClasses}`}>
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="text-xl font-bold text-yellow-500 mb-2">🏆 Final Synthesis</h3>
-                <div className="flex items-center gap-2 text-sm">
-                  <span className={`px-2 py-1 rounded ${
-                    finalSynthesis.real_api 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-yellow-100 text-yellow-800'
-                  }`}>
-                    {finalSynthesis.real_api ? 'Real API' : 'Demo'}
-                  </span>
-                  <span className={`${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>
-                    {finalSynthesis.confidence}% confidence
-                  </span>
-                  {finalSynthesis.tokens_used > 0 && (
-                    <span className={`${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>
-                      • {finalSynthesis.tokens_used} tokens
-                    </span>
-                  )}
-                </div>
-              </div>
-              <button
-                onClick={() => copyToClipboard(finalSynthesis.synthesis)}
-                className={`px-4 py-2 rounded transition-colors ${buttonClasses}`}
-              >
-                Copy Final Answer
-              </button>
-            </div>
-            <div className={`whitespace-pre-wrap ${isDarkTheme ? 'text-gray-100' : 'text-gray-900'}`}>
-              {finalSynthesis.synthesis}
-            </div>
-          </div>
-        )}
-
-        {/* Token Usage Summary */}
-        {Object.keys(tokenUsage).length > 0 && (
-          <div className={`rounded-lg border p-6 mt-6 ${cardClasses}`}>
-            <h3 className={`text-lg font-medium mb-4 ${isDarkTheme ? 'text-green-300' : 'text-green-700'}`}>
-              💰 Token Usage & Cost Summary
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Object.entries(tokenUsage).map(([model, tokens]) => (
-                <div key={model} className={`p-3 rounded border ${cardClasses}`}>
-                  <div className="font-medium">{model}</div>
-                  <div className={`text-sm ${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>
-                    {tokens.toLocaleString()} tokens
-                  </div>
-                  <div className={`text-sm font-medium ${isDarkTheme ? 'text-green-400' : 'text-green-600'}`}>
-                    ${calculateCost(model, tokens).toFixed(4)}
+                    ))}
                   </div>
                 </div>
               ))}
             </div>
-            <div className={`mt-4 pt-4 border-t ${isDarkTheme ? 'border-gray-600' : 'border-gray-300'}`}>
-              <div className="text-lg font-bold">
-                Total Cost: <span className="text-green-500">${getTotalCost().toFixed(4)}</span>
+          )}
+
+          {/* Final Synthesis */}
+          {finalSynthesis && (
+            <div className={`rounded-lg border p-6 mt-8 ${cardClasses}`}>
+              <h2 className="text-3xl font-bold mb-4 text-center">Final Synthesis</h2>
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-medium">Referee's Decision</span>
+                <span className={`text-sm font-semibold ${finalSynthesis.real_api ? 'text-green-400' : 'text-yellow-400'}`}>
+                  {finalSynthesis.real_api ? 'API' : 'Fallback'}
+                </span>
+              </div>
+              <p>{finalSynthesis.text}</p>
+              <button
+                onClick={() => copyToClipboard(finalSynthesis.text)}
+                className="mt-4 px-4 py-2 text-sm bg-gray-600 hover:bg-gray-500 rounded"
+              >
+                Copy
+              </button>
+            </div>
+          )}
+
+          {/* Token Usage & Cost */}
+          {Object.keys(tokenUsage).length > 0 && (
+            <div className={`rounded-lg border p-4 mt-8 ${cardClasses}`}>
+              <h3 className={`font-medium mb-2 ${isDarkTheme ? 'text-cyan-300' : 'text-cyan-700'}`}>
+                Token Usage & Cost
+              </h3>
+              <ul className="text-sm">
+                {Object.entries(tokenUsage).map(([model, tokens]) => (
+                  <li key={model} className="flex justify-between">
+                    <span>{model}:</span>
+                    <span>{tokens.toLocaleString()} tokens (~${calculateCost(model, tokens).toFixed(4)})</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="font-bold mt-2 pt-2 border-t border-gray-600 flex justify-between">
+                <span>Total Estimated Cost:</span>
+                <span>${getTotalCost().toFixed(4)}</span>
               </div>
             </div>
-          </div>
-        )}
-      </div>
-    </div>
+          )}
+        </div>
+      </MainPanel>
+    </Layout>
+
+
   );
 }
 
