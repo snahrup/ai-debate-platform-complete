@@ -1,0 +1,73 @@
+<h2>Everything</h2>
+<p>The <em>Everything</em> MCP server is a comprehensive reference/test server demonstrating all features of the Model
+    Context Protocol. It provides a variety of tools, resources, and prompts to showcase MCP capabilities and is ideal
+    for testing and development of MCP client applications.</p>
+<pre><code>"everything": { "command": "npx", "args": [ "-y", "@modelcontextprotocol/server-everything" ] } </code></pre>
+
+<h2>Fetch</h2>
+<p>The <em>Fetch</em> MCP server provides web content fetching and conversion capabilities. It enables LLM-based agents
+    to retrieve and process content from web pages, automatically converting HTML to Markdown for easier
+    consumption.</p>
+<pre><code>"fetch": { "command": "npx", "args": [ "-y", "@modelcontextprotocol/server-fetch" ] } </code></pre>
+
+<h2>Filesystem</h2>
+<p>The <em>Filesystem</em> MCP server offers secure file operations with configurable access controls. It is a Node.js
+    implementation of the MCP that allows reading, writing, and manipulating files and directories through a
+    standardized interface.</p>
+<pre><code>"filesystem": { "command": "npx", "args": [ "-y", "@modelcontextprotocol/server-filesystem", "C:/" ] } </code></pre>
+<pre><code>"filesystem": { "command": "npx", "args": [ "-y", "@modelcontextprotocol/server-filesystem", "C:/", "D:/" ] } </code></pre>
+
+<h2>Git</h2>
+<p>The <em>Git</em> MCP server provides Git repository interaction and automation. This server offers tools to read,
+    search, and manipulate Git repositories via MCP, enabling operations like repository cloning, file staging,
+    committing, and branch management.</p>
+<pre><code>"git": { "command": "npx", "args": [ "-y", "@modelcontextprotocol/server-git" ] } </code></pre>
+
+<h2>Memory</h2>
+<p>The <em>Memory</em> MCP server implements persistent memory using a local knowledge graph. It enables the agent to
+    store, retrieve, and manage information across interactions, allowing the assistant to "remember" user-specific
+    facts or context between sessions.</p>
+<pre><code>"memory": { "command": "npx", "args": [ "-y", "@modelcontextprotocol/server-memory" ] } </code></pre>
+
+<h2>Sequential Thinking</h2>
+<p>The <em>Sequential Thinking</em> MCP server facilitates structured, step-by-step problem solving. It breaks down
+    complex problems into sequential thoughts, tracks the progression of the reasoning process, and can generate
+    summaries of each stage.</p>
+<pre><code>"sequential-thinking": { "command": "npx", "args": [ "-y", "@modelcontextprotocol/server-sequential-thinking" ] } </code></pre>
+
+<h2>Time</h2>
+<p>The <em>Time</em> MCP server provides time and timezone conversion capabilities. It enables LLMs to obtain the
+    current time or convert times between different timezones using standard IANA timezone names, with automatic
+    detection of the system timezone.</p>
+<pre><code>"time": { "command": "npx", "args": [ "-y", "@modelcontextprotocol/server-time" ] } </code></pre>
+
+<script>
+    // Launch the selected server in the browser
+    function launchServer(serverConfig) {
+        const config = JSON.parse(`{${serverConfig}}`);
+        const serverName = Object.keys(config)[0];
+        const serverData = config[serverName];
+        
+        // Construct the command to execute
+        const command = `${serverData.command} ${serverData.args.join(' ')}`;
+        
+        // In a real implementation, you would need to use a backend API to execute this command
+        alert(`Launching server: ${serverName}\nCommand: ${command}`);
+        
+        // Here you would typically send an AJAX request to a backend endpoint that can execute the command
+        console.log(`Server launch requested: ${serverName}`);
+    }
+    
+    // Add click event listeners to all code blocks
+    document.addEventListener('DOMContentLoaded', function() {
+        const codeBlocks = document.querySelectorAll('pre code');
+        codeBlocks.forEach(block => {
+            const wrapper = block.parentElement;
+            wrapper.style.cursor = 'pointer';
+            wrapper.title = 'Click to launch this server';
+            wrapper.addEventListener('click', function() {
+                launchServer(block.textContent);
+            });
+        });
+    });
+</script>
