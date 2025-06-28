@@ -11,7 +11,9 @@ const __dirname = path.dirname(__filename);
 export default defineConfig({
   plugins: [
     react(),
-    tailwindcss(),
+    tailwindcss({
+      config: path.resolve(__dirname, 'tailwind.config.js'),
+    }),
   ],
   resolve: {
     alias: {

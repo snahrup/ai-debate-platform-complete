@@ -33,7 +33,7 @@ const MainPanel = ({
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             placeholder="Enter your debate question..."
-            className={`w-full p-3 rounded border bg-gray-100 dark:bg-gray-850 border-gray-300 dark:border-gray-700`}
+            className={`w-full p-3 rounded border bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700`}
             rows="3"
           />
           <button
