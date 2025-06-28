@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-const API_BASE_URL = 'https://9yhyi3cqmdlp.manus.space';
+const API_BASE_URL = 'http://localhost:5000'; // Changed to local backend server
 
 // Model configurations
 const MODEL_CONFIG = {
